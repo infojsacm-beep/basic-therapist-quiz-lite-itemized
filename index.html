@@ -64,7 +64,6 @@
         #explanation-box { background: #e8f6ef; padding: 15px; border-radius: 8px; margin-top: 15px; text-align: left; border-left: 5px solid var(--accent-color); font-size: 0.95rem; line-height: 1.6; }
         .range-label { display: block; margin-top: 25px; font-weight: bold; }
         
-        /* セレクトボックスのスタイル追加 */
         select {
             width: 90%;
             padding: 10px;
@@ -100,7 +99,6 @@
         </select>
 
         <label class="range-label">出題問題数を選択してください。: <span id="range-value">3</span>問</label>
-        <!-- 初期値と最大値を3に変更 -->
         <input type="range" id="question-range" min="1" max="3" value="3" oninput="updateRangeText(this.value)">
         
         <br>
@@ -158,7 +156,6 @@
         .then(data => {
             allQuestions = data;
             
-            // カテゴリ一覧を抽出し、セレクトボックスに追加する
             const categories = [...new Set(allQuestions.map(q => q.category || "一般"))];
             const select = document.getElementById('category-select');
             categories.forEach(cat => {
@@ -168,7 +165,6 @@
                 select.appendChild(option);
             });
 
-            // 初期状態のスライダー上限を設定する
             updateMaxRange();
         })
         .catch(error => {
@@ -180,13 +176,11 @@
         const selectedCategory = document.getElementById('category-select').value;
         const rangeInput = document.getElementById('question-range');
         
-        // 選択されたカテゴリに応じた問題リストを取得する
         let pool = allQuestions;
         if (selectedCategory !== 'all') {
             pool = allQuestions.filter(q => (q.category || "一般") === selectedCategory);
         }
 
-        // jsonのデータ数と上限3の小さい方を最大値に設定する（上限を3に変更）
         const maxLimit = Math.min(pool.length, 3);
         
         if (maxLimit === 0) {
@@ -194,7 +188,6 @@
             rangeInput.value = 0;
         } else {
             rangeInput.max = maxLimit;
-            // 現在の選択値が新しい最大値を超えている場合は調整する
             if (parseInt(rangeInput.value) > maxLimit) {
                 rangeInput.value = maxLimit;
             } else if (parseInt(rangeInput.value) < 1) {
@@ -218,7 +211,6 @@
         const selectedCategory = document.getElementById('category-select').value;
         let pool = allQuestions;
         
-        // 選択されたカテゴリの問題のみに絞り込む
         if (selectedCategory !== 'all') {
             pool = allQuestions.filter(q => (q.category || "一般") === selectedCategory);
         }
@@ -230,7 +222,14 @@
             return;
         }
 
-        targetQuestions = [...pool].sort(() => Math.random() - 0.5).slice(0, num);
+        // フィッシャー–イェーツのシャッフルによる確実なランダム化
+        let shuffledPool = [...pool];
+        for (let i = shuffledPool.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledPool[i], shuffledPool[j]] = [shuffledPool[j], shuffledPool[i]];
+        }
+
+        targetQuestions = shuffledPool.slice(0, num);
         
         currentIndex = 0;
         score = 0;
