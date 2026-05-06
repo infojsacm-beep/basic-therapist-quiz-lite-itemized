@@ -99,8 +99,9 @@
             <option value="all">すべて</option>
         </select>
 
-        <label class="range-label">出題問題数を選択してください。: <span id="range-value">10</span>問</label>
-        <input type="range" id="question-range" min="1" max="63" value="10" oninput="updateRangeText(this.value)">
+        <label class="range-label">出題問題数を選択してください。: <span id="range-value">3</span>問</label>
+        <!-- 初期値と最大値を3に変更 -->
+        <input type="range" id="question-range" min="1" max="3" value="3" oninput="updateRangeText(this.value)">
         
         <br>
         <button onclick="startQuiz()">学習を開始する</button>
@@ -185,8 +186,8 @@
             pool = allQuestions.filter(q => (q.category || "一般") === selectedCategory);
         }
 
-        // jsonのデータ数と上限63の小さい方を最大値に設定する
-        const maxLimit = Math.min(pool.length, 63);
+        // jsonのデータ数と上限3の小さい方を最大値に設定する（上限を3に変更）
+        const maxLimit = Math.min(pool.length, 3);
         
         if (maxLimit === 0) {
             rangeInput.max = 0;
