@@ -148,13 +148,23 @@
     let currentIndex = 0;
     let score = 0;
 
-    fetch('3mon.json')
+    // ブラウザのキャッシュを無効化するため、URLに現在時刻のパラメータを付与する
+    fetch('3mon.json?cache=' + new Date().getTime())
         .then(response => {
             if (!response.ok) throw new Error('3mon.json が読み込めない');
             return response.json();
         })
         .then(data => {
-            allQuestions = data;
+            // プログラム側で強制的に重複データを排除する（問題文が一致するものを弾く）
+            const uniqueQuestions = [];
+            const seen = new Set();
+            data.forEach(q => {
+                if (!seen.has(q.question)) {
+                    seen.add(q.question);
+                    uniqueQuestions.push(q);
+                }
+            });
+            allQuestions = uniqueQuestions;
             
             const categories = [...new Set(allQuestions.map(q => q.category || "一般"))];
             const select = document.getElementById('category-select');
@@ -222,7 +232,6 @@
             return;
         }
 
-        // フィッシャー–イェーツのシャッフルによる確実なランダム化
         let shuffledPool = [...pool];
         for (let i = shuffledPool.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
