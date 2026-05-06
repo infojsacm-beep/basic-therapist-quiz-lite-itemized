@@ -149,9 +149,9 @@
     let currentIndex = 0;
     let score = 0;
 
-    fetch('10mon.json')
+    fetch('3mon.json')
         .then(response => {
-            if (!response.ok) throw new Error('10mon.json が読み込めない');
+            if (!response.ok) throw new Error('3mon.json が読み込めない');
             return response.json();
         })
         .then(data => {
