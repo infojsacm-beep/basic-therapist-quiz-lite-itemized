@@ -103,7 +103,7 @@
         .speech-bubble {
             position: absolute;
             top: 5px;
-            left: 70%; /* キャラクターの右側に配置 */
+            left: 70%; 
             background: #fff;
             border: 3px solid var(--accent-color);
             border-radius: 15px;
@@ -116,26 +116,27 @@
             transition: opacity 0.3s;
             z-index: 10;
         }
-        /* 吹き出しのしっぽ（キャラクター側を指すように調整） */
+        /* 吹き出しのしっぽ（枠線部分） */
         .speech-bubble::before {
             content: "";
             position: absolute;
-            bottom: -3px;
-            left: -12px; /* 左側に突き出す */
-            border-top: 15px solid transparent;
-            border-right: 20px solid var(--accent-color); /* 枠線の色 */
-            border-bottom: 5px solid transparent;
-            transform: rotate(20deg); /* キャラクターに向くよう回転 */
+            bottom: 2px;
+            left: -15px;
+            border-style: solid;
+            border-width: 0 18px 15px 0;
+            border-color: transparent var(--accent-color) transparent transparent;
+            transform: rotate(15deg);
         }
+        /* 吹き出しのしっぽ（中塗り部分） */
         .speech-bubble::after {
             content: "";
             position: absolute;
-            bottom: 0px;
-            left: -8px;
-            border-top: 12px solid transparent;
-            border-right: 18px solid #fff; /* 中身の色 */
-            border-bottom: 4px solid transparent;
-            transform: rotate(20deg);
+            bottom: 4px;
+            left: -10px;
+            border-style: solid;
+            border-width: 0 15px 12px 0;
+            border-color: transparent #fff transparent transparent;
+            transform: rotate(15deg);
         }
     </style>
 </head>
