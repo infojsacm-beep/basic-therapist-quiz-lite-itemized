@@ -82,61 +82,50 @@
         
         .analytics-note { font-size: 0.75rem; color: #95a5a6; margin-top: 25px; line-height: 1.4; text-align: center; }
 
-        /* キャラクターと吹き出しの配置調整 */
+        /* キャラクターと吹き出しの配置 */
         #char-animation-container {
-            height: 180px;
+            height: 200px;
             display: none;
             justify-content: center;
             align-items: flex-end;
-            margin-bottom: 10px;
+            margin: 20px auto;
             position: relative;
             width: 100%;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 350px;
         }
+        
         #char-sprite {
             height: 150px;
             width: auto;
-            border-radius: 8px;
+            z-index: 5;
         }
+
+        /* SVG吹き出し：しっぽを左下、本体を右上に配置 */
         .speech-bubble {
             position: absolute;
-            top: 5px;
-            left: 70%; 
-            background: #fff;
-            border: 3px solid var(--accent-color);
-            border-radius: 15px;
-            padding: 8px 15px;
-            font-weight: bold;
-            color: var(--accent-color);
-            font-size: 1.2rem;
-            white-space: nowrap;
+            top: 0;
+            left: 65%;
+            transform: translateX(-10%);
+            width: 140px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.4s ease;
             z-index: 10;
+            /* SVG背景：しっぽが左下（0,70）から本体（30,50）へ繋がる形状 */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 70'%3E%3Cpath d='M30,10 Q30,0 40,0 L130,0 Q140,0 140,10 L140,50 Q140,60 130,60 L50,60 L0,70 L30,50 Z' fill='white' stroke='%2327ae60' stroke-width='3'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-size: contain;
         }
-        /* 吹き出しのしっぽ（枠線部分） */
-        .speech-bubble::before {
-            content: "";
-            position: absolute;
-            bottom: 2px;
-            left: -15px;
-            border-style: solid;
-            border-width: 0 18px 15px 0;
-            border-color: transparent var(--accent-color) transparent transparent;
-            transform: rotate(15deg);
-        }
-        /* 吹き出しのしっぽ（中塗り部分） */
-        .speech-bubble::after {
-            content: "";
-            position: absolute;
-            bottom: 4px;
-            left: -10px;
-            border-style: solid;
-            border-width: 0 15px 12px 0;
-            border-color: transparent #fff transparent transparent;
-            transform: rotate(15deg);
+
+        .bubble-text {
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: -5px; /* 吹き出し中央に合わせる微調整 */
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -187,7 +176,9 @@
     <div id="view-result" class="hidden">
         <h1>学習終了</h1>
         <div id="char-animation-container">
-            <div id="speech-bubble" class="speech-bubble">やったね！</div>
+            <div id="speech-bubble" class="speech-bubble">
+                <span class="bubble-text">やったね！</span>
+            </div>
             <img id="char-sprite" src="syoumen.jpg" alt="character">
         </div>
         <div id="score-display" style="font-size: 1.8rem; margin: 20px 0; line-height: 1.4;"></div>
