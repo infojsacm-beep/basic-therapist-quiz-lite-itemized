@@ -82,7 +82,6 @@
         
         .analytics-note { font-size: 0.75rem; color: #95a5a6; margin-top: 25px; line-height: 1.4; text-align: center; }
 
-        /* キャラクターと吹き出しの配置調整 */
         #char-animation-container {
             height: 180px;
             display: none;
@@ -91,7 +90,7 @@
             margin-bottom: 10px;
             position: relative;
             width: 100%;
-            max-width: 300px; /* 吹き出しがはみ出さないよう幅を制限 */
+            max-width: 320px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -102,9 +101,9 @@
         }
         .speech-bubble {
             position: absolute;
-            top: 10px; /* 少し下に配置 */
-            left: 85%; /* 右側にずらす */
-            transform: translateX(-20%);
+            top: 5px;
+            left: 80%; /* キャラクターの右側に配置 */
+            transform: translateX(-10%);
             background: #fff;
             border: 3px solid var(--accent-color);
             border-radius: 15px;
@@ -117,13 +116,13 @@
             transition: opacity 0.3s;
             z-index: 10;
         }
-        /* 吹き出しのしっぽ（左下に向ける） */
+        /* 吹き出しのしっぽ（キャラクターの方向＝左下へ向ける） */
         .speech-bubble::after {
             content: '';
             position: absolute;
-            bottom: -12px;
-            left: 20%; /* しっぽの位置を左寄りに */
-            border-width: 12px 10px 0;
+            bottom: -13px;
+            left: 10%; /* しっぽを吹き出しの左端に寄せる */
+            border-width: 13px 10px 0;
             border-style: solid;
             border-color: var(--accent-color) transparent transparent;
         }
