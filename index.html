@@ -36,7 +36,7 @@
         }
 
         .container { background: white; max-width: 600px; width: 100%; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; box-sizing: border-box; }
-        .hidden { display: none !important; } /* 強制的に非表示にする */
+        .hidden { display: none !important; }
         h1 { font-size: 1.4rem; margin-bottom: 20px; border-bottom: 2px solid var(--accent-color); padding-bottom: 10px; color: var(--main-color); }
         button { background-color: var(--accent-color); color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 1rem; margin: 10px 5px; transition: 0.3s; min-width: 120px; }
         button:hover { opacity: 0.8; }
@@ -82,18 +82,45 @@
         
         .analytics-note { font-size: 0.75rem; color: #95a5a6; margin-top: 25px; line-height: 1.4; text-align: center; }
 
-        /* キャラクターアニメーション用：初期状態は完全に隠す */
+        /* キャラクターアニメーションと吹き出し用スタイル */
         #char-animation-container {
-            height: 150px;
-            display: none; /* ここを flex ではなく none に設定 */
+            height: 180px;
+            display: none;
             justify-content: center;
-            align-items: center;
+            align-items: flex-end;
             margin-bottom: 10px;
+            position: relative;
         }
         #char-sprite {
-            height: 100%;
+            height: 150px;
             width: auto;
             border-radius: 8px;
+        }
+        .speech-bubble {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            border: 3px solid var(--accent-color);
+            border-radius: 15px;
+            padding: 8px 15px;
+            font-weight: bold;
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 12px 10px 0;
+            border-style: solid;
+            border-color: var(--accent-color) transparent transparent;
         }
     </style>
 </head>
@@ -144,6 +171,7 @@
     <div id="view-result" class="hidden">
         <h1>学習終了</h1>
         <div id="char-animation-container">
+            <div id="speech-bubble" class="speech-bubble">やったね！</div>
             <img id="char-sprite" src="syoumen.jpg" alt="character">
         </div>
         <div id="score-display" style="font-size: 1.8rem; margin: 20px 0; line-height: 1.4;"></div>
@@ -201,7 +229,6 @@
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('問題データの読み込みに失敗した。');
         });
 
     function updateMaxRange() {
@@ -308,12 +335,13 @@
 
         const animContainer = document.getElementById('char-animation-container');
         const sprite = document.getElementById('char-sprite');
+        const bubble = document.getElementById('speech-bubble');
 
         // 表示の初期化
         animContainer.style.display = "none";
+        bubble.style.opacity = "0";
         sprite.src = "syoumen.jpg";
 
-        // 80%以上の時だけ display を flex に切り替えて表示する
         if (percent >= 80) {
             animContainer.style.display = "flex";
             let frame = 0;
@@ -323,6 +351,8 @@
                 if (frame >= 5) {
                     clearInterval(interval);
                     sprite.src = "banzai.jpg";
+                    // アニメーション終了時に吹き出しを表示
+                    bubble.style.opacity = "1";
                 }
             }, 150);
         }
