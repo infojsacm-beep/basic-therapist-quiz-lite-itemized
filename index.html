@@ -378,12 +378,13 @@
             const interval = setInterval(() => {
                 sprite.src = animImages[frame % animImages.length];
                 frame++;
-                if (frame >= 5) {
+                // 2周（画像5枚 × 2 = 10回切り替え）したら停止する
+                if (frame >= 10) {
                     clearInterval(interval);
                     sprite.src = "banzai.jpg";
                     bubble.style.opacity = "1";
                 }
-            }, 150);
+            }, 150); // 回転速度を速めたい場合はこの数値を小さくする
         }
     }
 </script>
