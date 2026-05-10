@@ -328,22 +328,25 @@
         const animContainer = document.getElementById('char-animation-container');
         const sprite = document.getElementById('char-sprite');
 
-        // 正答率80%以上でアニメーション開始
+        // 判定の前に一旦コンテナを隠し、画像も初期状態に戻す
+        animContainer.classList.add('hidden');
+        sprite.src = "syoumen.jpg";
+
+        // 正答率80%以上の場合のみ、コンテナを表示してアニメーションを開始する
         if (percent >= 80) {
             animContainer.classList.remove('hidden');
             let frame = 0;
             const interval = setInterval(() => {
                 sprite.src = animImages[frame % animImages.length];
                 frame++;
-                // 1周（5枚の画像を一通り表示）したら停止し、最後に万歳ポーズにする
+                // 1周（5枚）したら停止し、万歳ポーズで固定する
                 if (frame >= 5) {
                     clearInterval(interval);
                     sprite.src = "banzai.jpg";
                 }
-            }, 150); // 速度を少し調整（0.15秒間隔）
-        } else {
-            animContainer.classList.add('hidden');
+            }, 150);
         }
+    
     
     }
 </script>
