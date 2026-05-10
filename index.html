@@ -82,7 +82,6 @@
         
         .analytics-note { font-size: 0.75rem; color: #95a5a6; margin-top: 25px; line-height: 1.4; text-align: center; }
 
-        /* キャラクターアニメーション用スタイル */
         #char-animation-container {
             height: 150px;
             display: flex;
@@ -165,7 +164,6 @@
     let currentIndex = 0;
     let score = 0;
 
-    // アニメーション用画像リストとプリロード
     const animImages = ["syoumen.jpg", "migi90do.jpg", "ushirosugata.jpg", "hidari90do.jpg", "banzai.jpg"];
     const preloadedImages = [];
     animImages.forEach(src => {
@@ -328,26 +326,23 @@
         const animContainer = document.getElementById('char-animation-container');
         const sprite = document.getElementById('char-sprite');
 
-        // 判定の前に一旦コンテナを隠し、画像も初期状態に戻す
+        // まずは必ず隠す
         animContainer.classList.add('hidden');
         sprite.src = "syoumen.jpg";
 
-        // 正答率80%以上の場合のみ、コンテナを表示してアニメーションを開始する
+        // 80%以上の場合のみ表示してアニメーション
         if (percent >= 80) {
             animContainer.classList.remove('hidden');
             let frame = 0;
             const interval = setInterval(() => {
                 sprite.src = animImages[frame % animImages.length];
                 frame++;
-                // 1周（5枚）したら停止し、万歳ポーズで固定する
                 if (frame >= 5) {
                     clearInterval(interval);
                     sprite.src = "banzai.jpg";
                 }
             }, 150);
         }
-    
-    
     }
 </script>
 
