@@ -6,7 +6,6 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-6514JWVXJK');
     </script>
 
@@ -82,6 +81,20 @@
         #category-tag { display: inline-block; background: var(--accent-color); color: white; padding: 5px 15px; border-radius: 20px; font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         
         .analytics-note { font-size: 0.75rem; color: #95a5a6; margin-top: 25px; line-height: 1.4; text-align: center; }
+
+        /* キャラクターアニメーション用スタイル */
+        #char-animation-container {
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        #char-sprite {
+            height: 100%;
+            width: auto;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -130,7 +143,11 @@
 
     <div id="view-result" class="hidden">
         <h1>学習終了</h1>
-        <div id="score-display" style="font-size: 1.8rem; margin: 30px 0; line-height: 1.4;"></div>
+        <!-- キャラクターアニメーション表示エリア -->
+        <div id="char-animation-container" class="hidden">
+            <img id="char-sprite" src="syoumen.jpg" alt="character">
+        </div>
+        <div id="score-display" style="font-size: 1.8rem; margin: 20px 0; line-height: 1.4;"></div>
         
         <button onclick="showView('view-setup')">最初からやり直す</button>
         <br>
@@ -148,14 +165,21 @@
     let currentIndex = 0;
     let score = 0;
 
-    // ブラウザのキャッシュを無効化するため、URLに現在時刻のパラメータを付与する
+    // アニメーション用画像リストとプリロード
+    const animImages = ["syoumen.jpg", "migi90do.jpg", "ushirosugata.jpg", "hidari90do.jpg", "banzai.jpg"];
+    const preloadedImages = [];
+    animImages.forEach(src => {
+        const img = new Image();
+        img.src = src;
+        preloadedImages.push(img);
+    });
+
     fetch('3mon.json?cache=' + new Date().getTime())
         .then(response => {
             if (!response.ok) throw new Error('3mon.json が読み込めない');
             return response.json();
         })
         .then(data => {
-            // プログラム側で強制的に重複データを排除する（問題文が一致するものを弾く）
             const uniqueQuestions = [];
             const seen = new Set();
             data.forEach(q => {
@@ -300,6 +324,26 @@
         document.getElementById('score-display').innerHTML = 
             `正答率: <span style="color:var(--accent-color); font-weight:bold;">${percent}%</span><br>` +
             `<span style="font-size:1.2rem;">${targetQuestions.length}問中 ${score}問 正解でした！</span>`;
+
+        const animContainer = document.getElementById('char-animation-container');
+        const sprite = document.getElementById('char-sprite');
+
+        // 正答率80%以上でアニメーション開始
+        if (percent >= 80) {
+            animContainer.classList.remove('hidden');
+            let frame = 0;
+            const interval = setInterval(() => {
+                sprite.src = animImages[frame % animImages.length];
+                frame++;
+                // 3周（15フレーム）したら正面を向いて「ばんざい」で止まるように調整
+                if (frame >= 15) {
+                    clearInterval(interval);
+                    sprite.src = "banzai.jpg";
+                }
+            }, 100); // 0.1秒間隔で切り替え
+        } else {
+            animContainer.classList.add('hidden');
+        }
     }
 </script>
 
