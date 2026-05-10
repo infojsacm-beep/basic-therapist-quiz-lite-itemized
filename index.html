@@ -82,7 +82,7 @@
         
         .analytics-note { font-size: 0.75rem; color: #95a5a6; margin-top: 25px; line-height: 1.4; text-align: center; }
 
-        /* キャラクターアニメーションと吹き出し用スタイル */
+        /* キャラクターと吹き出しの配置調整 */
         #char-animation-container {
             height: 180px;
             display: none;
@@ -90,6 +90,10 @@
             align-items: flex-end;
             margin-bottom: 10px;
             position: relative;
+            width: 100%;
+            max-width: 300px; /* 吹き出しがはみ出さないよう幅を制限 */
+            margin-left: auto;
+            margin-right: auto;
         }
         #char-sprite {
             height: 150px;
@@ -98,9 +102,9 @@
         }
         .speech-bubble {
             position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 10px; /* 少し下に配置 */
+            left: 85%; /* 右側にずらす */
+            transform: translateX(-20%);
             background: #fff;
             border: 3px solid var(--accent-color);
             border-radius: 15px;
@@ -111,13 +115,14 @@
             white-space: nowrap;
             opacity: 0;
             transition: opacity 0.3s;
+            z-index: 10;
         }
+        /* 吹き出しのしっぽ（左下に向ける） */
         .speech-bubble::after {
             content: '';
             position: absolute;
             bottom: -12px;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 20%; /* しっぽの位置を左寄りに */
             border-width: 12px 10px 0;
             border-style: solid;
             border-color: var(--accent-color) transparent transparent;
@@ -337,7 +342,6 @@
         const sprite = document.getElementById('char-sprite');
         const bubble = document.getElementById('speech-bubble');
 
-        // 表示の初期化
         animContainer.style.display = "none";
         bubble.style.opacity = "0";
         sprite.src = "syoumen.jpg";
@@ -351,7 +355,6 @@
                 if (frame >= 5) {
                     clearInterval(interval);
                     sprite.src = "banzai.jpg";
-                    // アニメーション終了時に吹き出しを表示
                     bubble.style.opacity = "1";
                 }
             }, 150);
