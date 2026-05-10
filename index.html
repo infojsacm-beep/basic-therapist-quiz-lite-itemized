@@ -36,7 +36,7 @@
         }
 
         .container { background: white; max-width: 600px; width: 100%; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; box-sizing: border-box; }
-        .hidden { display: none; }
+        .hidden { display: none !important; } /* 強制的に非表示にする */
         h1 { font-size: 1.4rem; margin-bottom: 20px; border-bottom: 2px solid var(--accent-color); padding-bottom: 10px; color: var(--main-color); }
         button { background-color: var(--accent-color); color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 1rem; margin: 10px 5px; transition: 0.3s; min-width: 120px; }
         button:hover { opacity: 0.8; }
@@ -82,9 +82,10 @@
         
         .analytics-note { font-size: 0.75rem; color: #95a5a6; margin-top: 25px; line-height: 1.4; text-align: center; }
 
+        /* キャラクターアニメーション用：初期状態は完全に隠す */
         #char-animation-container {
             height: 150px;
-            display: flex;
+            display: none; /* ここを flex ではなく none に設定 */
             justify-content: center;
             align-items: center;
             margin-bottom: 10px;
@@ -142,8 +143,7 @@
 
     <div id="view-result" class="hidden">
         <h1>学習終了</h1>
-        <!-- キャラクターアニメーション表示エリア -->
-        <div id="char-animation-container" class="hidden">
+        <div id="char-animation-container">
             <img id="char-sprite" src="syoumen.jpg" alt="character">
         </div>
         <div id="score-display" style="font-size: 1.8rem; margin: 20px 0; line-height: 1.4;"></div>
@@ -207,24 +207,18 @@
     function updateMaxRange() {
         const selectedCategory = document.getElementById('category-select').value;
         const rangeInput = document.getElementById('question-range');
-        
         let pool = allQuestions;
         if (selectedCategory !== 'all') {
             pool = allQuestions.filter(q => (q.category || "一般") === selectedCategory);
         }
-
         const maxLimit = Math.min(pool.length, 3);
-        
         if (maxLimit === 0) {
             rangeInput.max = 0;
             rangeInput.value = 0;
         } else {
             rangeInput.max = maxLimit;
-            if (parseInt(rangeInput.value) > maxLimit) {
-                rangeInput.value = maxLimit;
-            } else if (parseInt(rangeInput.value) < 1) {
-                rangeInput.value = 1;
-            }
+            if (parseInt(rangeInput.value) > maxLimit) rangeInput.value = maxLimit;
+            else if (parseInt(rangeInput.value) < 1) rangeInput.value = 1;
         }
         updateRangeText(rangeInput.value);
     }
@@ -242,26 +236,20 @@
     function startQuiz() {
         const selectedCategory = document.getElementById('category-select').value;
         let pool = allQuestions;
-        
         if (selectedCategory !== 'all') {
             pool = allQuestions.filter(q => (q.category || "一般") === selectedCategory);
         }
-
         const num = parseInt(document.getElementById('question-range').value);
-        
         if (pool.length === 0 || num === 0) {
             alert("該当する問題が存在しない");
             return;
         }
-
         let shuffledPool = [...pool];
         for (let i = shuffledPool.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [shuffledPool[i], shuffledPool[j]] = [shuffledPool[j], shuffledPool[i]];
         }
-
         targetQuestions = shuffledPool.slice(0, num);
-        
         currentIndex = 0;
         score = 0;
         showView('view-quiz');
@@ -284,10 +272,8 @@
         const q = targetQuestions[currentIndex];
         const feedback = document.getElementById('feedback');
         document.querySelectorAll('.ox-container button').forEach(b => b.disabled = true);
-        
         const cleanAnswer = q.answer.trim().replace(/[◯○]/g, '〇'); 
         const cleanChoice = choice.trim().replace(/[◯○]/g, '〇');
-        
         if(cleanChoice === cleanAnswer) {
             feedback.textContent = "正解！";
             feedback.style.color = "var(--accent-color)";
@@ -309,11 +295,8 @@
 
     function nextQuestion() {
         currentIndex++;
-        if(currentIndex < targetQuestions.length) {
-            showQuestion();
-        } else {
-            showResult();
-        }
+        if(currentIndex < targetQuestions.length) showQuestion();
+        else showResult();
     }
 
     function showResult() {
@@ -326,13 +309,13 @@
         const animContainer = document.getElementById('char-animation-container');
         const sprite = document.getElementById('char-sprite');
 
-        // まずは必ず隠す
-        animContainer.classList.add('hidden');
+        // 表示の初期化
+        animContainer.style.display = "none";
         sprite.src = "syoumen.jpg";
 
-        // 80%以上の場合のみ表示してアニメーション
+        // 80%以上の時だけ display を flex に切り替えて表示する
         if (percent >= 80) {
-            animContainer.classList.remove('hidden');
+            animContainer.style.display = "flex";
             let frame = 0;
             const interval = setInterval(() => {
                 sprite.src = animImages[frame % animImages.length];
