@@ -335,15 +335,16 @@
             const interval = setInterval(() => {
                 sprite.src = animImages[frame % animImages.length];
                 frame++;
-                // 3周（15フレーム）したら正面を向いて「ばんざい」で止まるように調整
-                if (frame >= 15) {
+                // 1周（5枚の画像を一通り表示）したら停止し、最後に万歳ポーズにする
+                if (frame >= 5) {
                     clearInterval(interval);
                     sprite.src = "banzai.jpg";
                 }
-            }, 100); // 0.1秒間隔で切り替え
+            }, 150); // 速度を少し調整（0.15秒間隔）
         } else {
             animContainer.classList.add('hidden');
         }
+    }
     }
 </script>
 
